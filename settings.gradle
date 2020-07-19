@@ -1,0 +1,3 @@
+rootProject.name='ASMSample'
+include ':app'
+include ':plugin'
