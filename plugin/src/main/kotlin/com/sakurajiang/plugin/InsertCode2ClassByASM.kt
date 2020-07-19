@@ -61,6 +61,9 @@ object InsertCode2ClassByASM {
             if("<init>"==name && "()V"==descriptor){
                 return InitVariableAdviceAdapter(api,methodVisitor,access,name,descriptor,className)
             }
+            if("add"==name&&"(II)I"==descriptor){
+                return InsertMethodHeadAdviceAdapter(api,methodVisitor,access,name,descriptor)
+            }
             if("insertMethod"==name&&"(Ljava/lang/String;)V"==descriptor){
                 isAlreadyInsertMethod = true
             }
@@ -163,6 +166,20 @@ object InsertCode2ClassByASM {
         methodVisitor.visitEnd()
     }
 
-
+    class InsertMethodHeadAdviceAdapter (
+        api: Int, val methodVisitor: MethodVisitor,
+        access: Int, name: String?, desc: String?
+    ) : AdviceAdapter(api, methodVisitor, access, name, desc){
+        override fun onMethodEnter() {
+            methodVisitor.visitInsn(Opcodes.ICONST_1)
+            methodVisitor.visitMethodInsn(
+                Opcodes.INVOKESTATIC,
+                "com/sakurajiang/asmsample/LoggerHelper",
+                "log",
+                "(Z)V",
+                false
+            )
+        }
+    }
 }
 
