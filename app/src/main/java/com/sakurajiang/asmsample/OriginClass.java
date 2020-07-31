@@ -7,4 +7,8 @@ public class OriginClass {
     public int add(int a,int b){
         return a+b;
     }
+
+    public void testInsertMethod(){
+        LoggerHelper.log(true);
+    }
 }

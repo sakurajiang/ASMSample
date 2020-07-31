@@ -61,7 +61,7 @@ object InsertCode2ClassByASM {
             if("<init>"==name && "()V"==descriptor){
                 return InitVariableAdviceAdapter(api,methodVisitor,access,name,descriptor,className)
             }
-            if("add"==name&&"(II)I"==descriptor){
+            if("testInsertMethod"==name&&"()V"==descriptor){
                 return InsertMethodHeadAdviceAdapter(api,methodVisitor,access,name,descriptor)
             }
             if("insertMethod"==name&&"(Ljava/lang/String;)V"==descriptor){
@@ -171,15 +171,23 @@ object InsertCode2ClassByASM {
         access: Int, name: String?, desc: String?
     ) : AdviceAdapter(api, methodVisitor, access, name, desc){
         override fun onMethodEnter() {
-            methodVisitor.visitInsn(Opcodes.ICONST_1)
-            methodVisitor.visitMethodInsn(
-                Opcodes.INVOKESTATIC,
-                "com/sakurajiang/asmsample/LoggerHelper",
-                "log",
-                "(Z)V",
-                false
-            )
+            insertMethodInvokeCode(methodVisitor)
         }
+
+        override fun onMethodExit(opcode: Int) {
+            insertMethodInvokeCode(methodVisitor)
+        }
+    }
+
+    fun insertMethodInvokeCode(methodVisitor: MethodVisitor){
+        methodVisitor.visitInsn(ICONST_1)
+        methodVisitor.visitMethodInsn(
+            INVOKESTATIC,
+            "com/sakurajiang/asmsample/LoggerHelper",
+            "log",
+            "(Z)V",
+            false
+        )
     }
 }
 
